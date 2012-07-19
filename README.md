@@ -10,6 +10,11 @@ Warehouse.js is a data storage layer for node.js and browser providing unified A
 
 Make a quick protoype of your application without using an external database. Then switch to a robust storage (like MongoDB or MySQL) without the need to change your code.
 
+## Install
+```
+npm install git://github.com/dundalek/warehouse.git
+```
+
 ## REST server with express in node.js
 
 ```javascript
@@ -24,7 +29,6 @@ var app = express.createServer(),
 warehouse.applyRoutes(app, store);
 
 app.listen(80);
-
 ```
 
 The example server above can be used with [Backbone.js](http://backbonejs.com).
@@ -49,7 +53,6 @@ var john = items.create({name: 'John', age: 25});
 john.set('age', 30);
 
 john.save();
-
 ```
 
 
@@ -79,13 +82,11 @@ store.delete(15).then(callback);
 
 // Delete all
 store.clear().then(callback);
-
 ```
 
 ## Querying
 
 Queries are implemented using [RQL](http://github.com/persvr/rql#rql-rules).
-
 ```javascript
 
 // get items with id=15
@@ -97,7 +98,6 @@ store.query('age=ge=21').then(callback);
 
 // get items with price < 100, sort by acending price and descending rating
 store.query('price=lt=100&sort(+price,-rating)').then(callback);
-
 ```
 
 ## API
@@ -166,7 +166,6 @@ var options = {
 var MongoBackend = require('warehouse/backend/mongodb'),
     backend = new MongoBackend(options),
     store = backend.objectStore('item');
-
 ```
 
 You can use _db_ and _collection_ methods to get native driver objects.
@@ -181,7 +180,6 @@ store.collection().then(function(collection) {
     // native collection method
     collection.find({tags: {$size: 2}}, function(err, result) {});
 });
-
 ```
 
 ### SQL
@@ -213,7 +211,6 @@ var options = {
 var SqlBackend = require('warehouse/backend/sql'),
     backend = new SqlBackend(options),
     store = backend.objectStore('item');
-
 ```
 
 If you need to execute advanced queries, _runSql_ and _runSqlAll_ methods can be used.
@@ -231,7 +228,6 @@ store.runSqlAll("SELECT * FROM people WHERE age = ?", [32])
      .then(function(items) {
          // items is an array containing all the people with age 32
      });
-
 ```
 
 ### Memory
@@ -280,7 +276,6 @@ store = backend.objectStore('item', {json: data});
 // create the store and set data laterr
 store = backend.objectStore('item');
 store.fromJSON(data);
-
 ```
 
 ### REST
@@ -298,7 +293,6 @@ Pass _url_ option to specify remove server address (default is '/').
 var RestBackend = require('warehouse/backend/rest'),
     backend = new RestBackend({url: 'http://example.com'}),
     store = backend.objectStore('item');
-
 ```
 
 ### Local Storage
@@ -322,5 +316,4 @@ var sessionStore = backend.objectStore('session');
 
 // persistent
 var localStore = backend.objectStore('local');
-
 ```
