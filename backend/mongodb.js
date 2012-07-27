@@ -96,6 +96,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
 {
     /** */
     initialize: function(backend, name, options) {
+        options = _.extend({keyPath: '_id'}, options || {});
         BaseBackend.BaseStore.prototype.initialize.call(this, backend, name, options);
 
         this._collection = null;
