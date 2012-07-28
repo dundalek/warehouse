@@ -14,6 +14,7 @@
 	<script type="text/javascript" src="../backend/base.js"></script>
 	<script type="text/javascript" src="../backend/memory.js"></script>
 	<script type="text/javascript" src="../backend/rest.js"></script>
+	<script type="text/javascript" src="../backend/elasticsearch.js"></script>
 	<script type="text/javascript" src="../backend/local.js"></script>
 	<script type="text/javascript" src="test.js"></script>
 	<script type="text/javascript" src="backend/memory-test.js"></script>
@@ -21,10 +22,32 @@
         store = new MemoryBackend().objectStore('test', {keyPath: '_id'});
         run_tests(store, 'Memory');
 	
-		var port = 12345;
+		var port = 12345,
+			ElasticSearchUrl = 'http://localhost:9200/test';
 
 		store = new RestBackend({url: 'http://localhost:'+port}).objectStore('test', {keyPath: '_id'});
 		run_tests(store, 'Rest');
+
+		// hooks to refresh ElasticSearch indices
+		QUnit.moduleStart = function(res) {
+			if (res && res.name === 'ElasticSearch: CRUD') {
+				delete QUnit.moduleStart;
+				QUnit.testDone = function() {
+					QUnit.stop();
+					$.post(ElasticSearchUrl+'/_refresh', function() {
+						QUnit.start();
+					});
+				};
+				QUnit.moduleDone = function(res) {
+					if (res && res.name === 'ElasticSearch: Querying') {
+						delete QUnit.testDone;
+						delete QUnit.moduleDone;
+					}
+				};
+			}
+		};
+		store = new ElasticSearchBackend({url: ElasticSearchUrl}).objectStore('test');
+		run_tests(store, 'ElasticSearch');
 
 		store = new LocalBackend().objectStore('local', {keyPath: '_id'});
 		run_tests(store, 'Local - local');

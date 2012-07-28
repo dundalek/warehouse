@@ -1,7 +1,9 @@
 
 @run_tests = (store, name) ->
-
     name = if typeof name == 'undefined' then store.constructor.name else name
+
+    if typeof qinit != 'undefined'
+        qinit(QUnit)
 
     eq = strictEqual
     deq = deepEqual

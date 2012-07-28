@@ -37,7 +37,7 @@
 })(function(ajax, _, BaseBackend) {
 
 /** @class RestBackend */
-var RestBackend = BaseBackend.BaseStore.extend(
+var RestBackend = BaseBackend.extend(
 /** @lends RestBackend# */
 {
     /** */

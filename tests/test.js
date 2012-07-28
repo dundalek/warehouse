@@ -4,6 +4,9 @@
   this.run_tests = function(store, name) {
     var checkFail, config_autorun, config_autostart, config_reorder, deq, eq, james, jane, john, module;
     name = typeof name === 'undefined' ? store.constructor.name : name;
+    if (typeof qinit !== 'undefined') {
+      qinit(QUnit);
+    }
     eq = strictEqual;
     deq = deepEqual;
     module = QUnit.module;
