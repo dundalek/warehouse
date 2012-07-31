@@ -8,8 +8,6 @@
     eq = strictEqual
     deq = deepEqual
 
-    module = QUnit.module
-
     john = {_id: 1, firstname: 'John', lastname: 'Silver', age: 30}
     james = {_id: 2, firstname: 'James', lastname: 'Wood', age: 42}
     jane = {_id: 3, firstname: 'Jane', lastname: 'White', age: 28}
@@ -28,11 +26,9 @@
             eq err, '', 'error message'
             start()
 
-    module "#{name}: CRUD"
-    , {
-       setup: if typeof setup != 'undefined' then (-> QUnit.stop(); setup().then(->QUnit.start())) else ->,
-       teardown: if typeof teardown != 'undefined' then (-> QUnit.stop(); teardown().then(->QUnit.start())) else ->
-    }
+    QUnit.moduleStart(if typeof setup != 'undefined' then (-> QUnit.stop(); setup().then( -> QUnit.start())) else ->)
+
+    QUnit.module "#{name}: CRUD"
 
     asyncTest 'clear', ->
         checkFail store.clear()
@@ -135,7 +131,7 @@
                 deq res, 0
                 start()
 
-    module "#{name}: Querying"
+    QUnit.module "#{name}: Querying"
 
     asyncTest 'find by name', ->
         checkFail store.query('firstname=John')

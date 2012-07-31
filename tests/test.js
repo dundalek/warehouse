@@ -2,14 +2,13 @@
 (function() {
 
   this.run_tests = function(store, name) {
-    var checkFail, config_autorun, config_autostart, config_reorder, deq, eq, james, jane, john, module;
+    var checkFail, config_autorun, config_autostart, config_reorder, deq, eq, james, jane, john;
     name = typeof name === 'undefined' ? store.constructor.name : name;
     if (typeof qinit !== 'undefined') {
       qinit(QUnit);
     }
     eq = strictEqual;
     deq = deepEqual;
-    module = QUnit.module;
     john = {
       _id: 1,
       firstname: 'John',
@@ -41,20 +40,13 @@
         return start();
       });
     };
-    module("" + name + ": CRUD", {
-      setup: typeof setup !== 'undefined' ? (function() {
-        QUnit.stop();
-        return setup().then(function() {
-          return QUnit.start();
-        });
-      }) : function() {},
-      teardown: typeof teardown !== 'undefined' ? (function() {
-        QUnit.stop();
-        return teardown().then(function() {
-          return QUnit.start();
-        });
-      }) : function() {}
-    });
+    QUnit.moduleStart(typeof setup !== 'undefined' ? (function() {
+      QUnit.stop();
+      return setup().then(function() {
+        return QUnit.start();
+      });
+    }) : function() {});
+    QUnit.module("" + name + ": CRUD");
     asyncTest('clear', function() {
       return checkFail(store.clear().then(function() {
         ok(true);
@@ -134,7 +126,7 @@
         return start();
       }));
     });
-    module("" + name + ": Querying");
+    QUnit.module("" + name + ": Querying");
     asyncTest('find by name', function() {
       return checkFail(store.query('firstname=John').then(function(res) {
         deq(res, [john]);
