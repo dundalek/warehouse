@@ -2,7 +2,7 @@
 (function() {
 
   this.run_tests = function(store, name) {
-    var alice1, alice2, james, jane, john, people, q, ql, setup_data, toObj;
+    var alice1, alice2, asyncTest, james, jane, john, people, q, ql, setup_data, toObj;
     name = typeof name === 'undefined' ? store.constructor.name : name;
     john = {
       _id: 1,
@@ -45,7 +45,6 @@
       return ret;
     };
     q = function(str, expected, fn) {
-      console.log(str, store.parse(str));
       return store.query(str).then(function(result) {
         if (typeof fn === 'function') {
           result = fn(result);
@@ -53,11 +52,11 @@
         deepEqual(result, expected, str);
         return start();
       }).fail(function(msg) {
-        return ok(false, msg);
+        ok(false, msg);
+        return start();
       });
     };
     ql = function(str, expected, fn) {
-      console.log(str, store.parse(str));
       return store.query(str).then(function(result) {
         if (typeof fn === 'function') {
           result = fn(result);
@@ -65,20 +64,37 @@
         equal(result.length, expected, str);
         return start();
       }).fail(function(msg) {
-        return ok(false, msg);
+        ok(false, msg);
+        return start();
       });
     };
     setup_data = function() {
-      stop(5);
-      return store.clear().then(function() {
-        var i, _i, _len;
-        for (_i = 0, _len = people.length; _i < _len; _i++) {
-          i = people[_i];
-          store.add(i).then(function() {
-            return start();
-          });
+      var add;
+      stop();
+      add = function(i) {
+        if (i >= people.length) {
+          start();
+          return;
         }
-        return null;
+        return store.add(people[i]).then(function() {
+          return add(i + 1);
+        });
+      };
+      return store.clear().then(function() {
+        return add(0);
+      });
+    };
+    QUnit.config.reorder = false;
+    QUnit.config.autostart = false;
+    QUnit.config.autorun = false;
+    asyncTest = function(testName, expected, callback) {
+      if (arguments.length === 2) {
+        callback = expected;
+        expected = null;
+      }
+      return QUnit.test(testName, expected, function() {
+        QUnit.stop(expected || 0);
+        return callback();
       });
     };
     QUnit.moduleStart(typeof setup !== 'undefined' ? (function() {
@@ -88,6 +104,9 @@
         return QUnit.start();
       });
     }) : setup_data);
+    if (typeof qinit !== 'undefined') {
+      qinit(QUnit);
+    }
     QUnit.module("" + name + ": RQL");
     asyncTest('select', 2, function() {
       q('select(firstname)', toObj(people.map(function(x) {
@@ -102,21 +121,8 @@
         };
       })), toObj);
     });
-    asyncTest('values', 3, function() {
-      q('values(firstname)', people.map(function(x) {
-        return [x.firstname];
-      }));
-      q('values(age)', people.map(function(x) {
-        return [x.age];
-      }));
-      return q('values(firstname,age)', people.map(function(x) {
-        return [x.firstname, x.age];
-      }));
-    });
-    asyncTest('distinct', 4, function() {
+    asyncTest('distinct', 2, function() {
       ql('select(age)&distinct()', 3);
-      ql('select(age)&distinct', 3);
-      q('values(age)&distinct()&sort(+age)', [28, 30, 42]);
       return q('select(age)&distinct()&sort(+age)', [28, 30, 42].map(function(x) {
         return {
           age: x
@@ -198,10 +204,10 @@
     });
     asyncTest('and', 2, function() {
       ql('age>28&age!=42', 2);
-      return ql('and(age>28,age!=42)', 2);
+      return ql('age>28,age!=42', 2);
     });
     asyncTest('or', 2, function() {
-      ql('age>30|age=28', 3);
+      ql('(age>30|age=28)', 3);
       return ql('or(age>30,age=28)', 3);
     });
     asyncTest('or nested in and', 3, function() {
@@ -209,28 +215,10 @@
       ql('or(age=28,age=30)&or(firstname=Alice,firstname=John)', 3);
       return ql('(age=28|age=30)&(firstname=Alice|firstname=John)', 3);
     });
-    asyncTest('and nested in or', 3, function() {
+    return asyncTest('and nested in or', 3, function() {
       ql('or(and(age=28,firstname=Alice),and(age=30,firstname=John))', 2);
-      ql('and(age=28,firstname=Alice)|and(age=30,firstname=John)', 2);
-      return ql('(age=28&firstname=Alice)|(age=30&firstname=John)', 2);
-    });
-    asyncTest('aggregate', 4, function() {
-      q('aggregate(firstname,sum(age))', null);
-      q('aggregate(firstname,mean(age))', null);
-      q('aggregate(firstname,max(age))', null);
-      return q('aggregate(firstname,min(age))', null);
-    });
-    asyncTest('functions', 4, function() {
-      q('mean(age)', null);
-      q('sum(age)', null);
-      q('max(age)', null);
-      return q('min(age)', null);
-    });
-    return asyncTest('count', 4, function() {
-      q('count()', 5);
-      q('count', 5);
-      q('firstname=John&count()', 1);
-      return q('age>28&count()', 3);
+      ql('(and(age=28,firstname=Alice)|and(age=30,firstname=John))', 2);
+      return ql('((age=28&firstname=Alice)|(age=30&firstname=John))', 2);
     });
   };
 

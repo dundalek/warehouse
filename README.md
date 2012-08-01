@@ -142,6 +142,7 @@ Common attributes:
 
 - [MongoDB](#mongodb) (server)
 - [SQL](#sql) (server)
+- [Elastic Search](#elasticsearch) (server and browser)
 - [Memory](#memory) (server and browser)
 - [REST](#rest) (server and browser)
 - [Local Storage](#local-storage) (browser)
@@ -230,6 +231,21 @@ store.runSqlAll("SELECT * FROM people WHERE age = ?", [32])
      });
 ```
 
+### ElasticSearch
+
+Backend using [ElasticSearch](http://www.elasticsearch.org/).
+
+This backend works under both server and browser.
+
+Pass _url_ option to specify remove server address.
+
+```javascript
+
+var ElasticSearchBackend = require('warehouse/backend/elasticsearch'),
+    backend = new ElasticSearchBackend({url: 'http://example.com/index'}),
+    store = backend.objectStore('item');
+```
+
 ### Memory
 
 Store items in memory using native Arrays and Objects. It is useful for making quick prototypes without the need of external dependencies.
@@ -286,7 +302,7 @@ If you combine it with a server (acting as a transparent proxy), you can basical
 
 This backend works under both server and browser.
 
-Pass _url_ option to specify remove server address (default is '/').
+Pass _url_ option to specify remote server address (default is '/').
 
 ```javascript
 

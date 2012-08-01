@@ -16,7 +16,7 @@
                         return typeof body === 'string' ? JSON.parse(body) : body;
                     });
         };
-        module.exports = factory(ajax, require('underscore'), require('./base'));
+        module.exports = factory(ajax, require('underscore-data'), require('./base'));
     } else {
         // running in browser
         Q = this.Q;
@@ -125,7 +125,7 @@ var RestStore = BaseBackend.BaseStore.extend(
 
     /** Execute RQL query */
     query: function(query) {
-        return ajax('GET', this._url + (query ? '?' + query : ''));
+        return ajax('GET', this._url + (query ? '?' + _.rql(query).toString() : ''));
     },
 
     /** Delete all items */

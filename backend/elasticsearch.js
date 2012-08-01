@@ -16,7 +16,7 @@
                         return typeof body === 'string' ? JSON.parse(body) : body;
                     });
         };
-        module.exports = factory(ajax, require('underscore-data'), require('./rest'));
+        module.exports = factory(ajax, require('underscore-data'), require('./base'), require('../rql/elasticsearch').rql2es);
     } else {
         // running in browser
         Q = this.Q;
@@ -32,9 +32,9 @@
             }
             return Q.when($.ajax(obj));
         };
-        window.ElasticSearchBackend = factory(ajax, _, BaseBackend);
+        window.ElasticSearchBackend = factory(ajax, _, BaseBackend, rql2es);
     }
-})(function(ajax, _, BaseBackend) {
+})(function(ajax, _, BaseBackend, rql2es) {
 
 /** @class ElasticSearchBackend */
 var ElasticSearchBackend = BaseBackend.extend(
@@ -156,10 +156,13 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
 
     /** Execute RQL query */
     query: function(query) {
-        var q = rql2es(_.rql(query));
+        var q = rql2es(_.rql(query)),
+            mapFn = q.fields
+                        ? function(x) { return x.fields; }
+                        : function(x) { return x._source; };
         return ajax('POST', this._url + '/_search', q)
             .then(function(result) {
-                return result.hits.hits.map(function(x) { return x._source; });
+                return result.hits.hits.map(mapFn);
             });
     },
 
@@ -168,54 +171,6 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
         return ajax('DELETE', this._url + '/_query', {"match_all": {}});
     }
 });
-
-function rql2es(query) {
-    var q = {},
-        _query = {},
-        _sort = [];
-
-    function convertRql(query) {
-        query.args.forEach(function(term, index) {
-            switch (term.name) {
-                case "eq":
-                    _query.text = _query.text || {};
-                    _query.text[term.args[0]] = term.args[1];
-                break;
-                case "sort":
-                    if(term.args.length === 0)
-                          throw new URIError("Must specify a sort criteria");
-                  term.args.forEach(function(sortAttribute){
-                      var firstChar = sortAttribute.charAt(0);
-                      var orderDir = "asc";
-                      if(firstChar == "-" || firstChar == "+"){
-                          if(firstChar == "-"){
-                              orderDir = "desc";
-                          }
-                          sortAttribute = sortAttribute.substring(1);
-                      }
-                      var obj = {};
-                      obj[sortAttribute] = orderDir;
-                      _sort.push(obj);
-                  });
-                break;
-            }
-        });
-
-    }
-
-    convertRql(query);
-
-    if (_.isEmpty(_query)) {
-        _query = {"match_all": {}};
-    }
-    q.query = _query;
-
-    if (_sort.length > 0) {
-        q.sort = _sort;
-    }
-
-    return q;
-}
 
 ElasticSearchBackend.ElasticSearchStore = ElasticSearchStore;
 

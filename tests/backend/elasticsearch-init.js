@@ -9,14 +9,18 @@ exports.store = store;
 
 // hooks to refresh ElasticSearch indices
 exports.qinit = function(QUnit) {
-	QUnit.testDone(function() {
+	function refresh() {
 		QUnit.stop();
 		request({
 			method:'POST',
 			url: ElasticSearchUrl+'/_refresh'
 		},
 		function() {
-			QUnit.start();
+			setTimeout(function() {
+				QUnit.start();	
+			}, 200);
 		});
-	});
+	}
+	QUnit.testDone(refresh);
+	QUnit.moduleStart(refresh);
 }
