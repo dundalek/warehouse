@@ -5,7 +5,7 @@ Warehouse.js is a data storage layer for node.js and browser providing unified A
 - Supports multiple backends (MongoDB, MySQL, SQLite, in-memory and others)
 - Create REST server using few lines of code (compatible with Backbone.js)
 - Unified API for CRUD operations
-- Powerful query language RQL
+- Powerful query language [RQL](http://dundalek.com/rql/)
 - MIT License
 
 Make a quick protoype of your application without using an external database. Then switch to a robust storage (like MongoDB or MySQL) without the need to change your code.
@@ -86,7 +86,7 @@ store.clear().then(callback);
 
 ## Querying
 
-Queries are implemented using [RQL](http://github.com/persvr/rql#rql-rules).
+Queries are implemented using [RQL](http://dundalek.com/rql/).
 ```javascript
 
 // get items with id=15
@@ -237,7 +237,7 @@ Backend using [ElasticSearch](http://www.elasticsearch.org/).
 
 This backend works under both server and browser.
 
-Pass _url_ option to specify remove server address.
+Pass _url_ option to specify remote server address.
 
 ```javascript
 
