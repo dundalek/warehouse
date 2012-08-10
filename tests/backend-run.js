@@ -44,3 +44,8 @@ testrunner.run({
     code: "./backend/elasticsearch-init.js",
     tests: "./test.js"
 });
+
+testrunner.run({
+    code: "./backend/memory-init.js",
+    tests: ["./rql-builder.js"]
+});

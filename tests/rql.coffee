@@ -1,5 +1,5 @@
 
-@run_tests = (store, name) ->
+@run_tests_rql = (store, name) ->
 	name = if typeof name == 'undefined' then store.constructor.name else name
 
 	john = {_id: 1, firstname: 'John', lastname: 'Silver', age: 30}
@@ -49,9 +49,9 @@
 		store.clear().then ->
 			add(0)
 
-	QUnit.config.reorder = false
-	QUnit.config.autostart = false
-	QUnit.config.autorun = false
+	#QUnit.config.reorder = false
+	#QUnit.config.autostart = false
+	#QUnit.config.autorun = false
 
 	asyncTest = ( testName, expected, callback ) ->
 		if arguments.length == 2
@@ -202,4 +202,4 @@
 	# one
 
 if typeof require != 'undefined'
-    @run_tests(store, if typeof name == 'undefined' then undefined else name)
+    @run_tests_rql(store, if typeof name == 'undefined' then undefined else name)

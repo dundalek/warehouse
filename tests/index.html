@@ -19,46 +19,51 @@
 	<script type="text/javascript" src="../backend/local.js"></script>
 	<script type="text/javascript" src="test.js"></script>
 	<script type="text/javascript" src="backend/memory-test.js"></script>
+	<script type="text/javascript" src="rql.js"></script>
+	<script type="text/javascript" src="rql-builder.js"></script>
 	<script type="text/javascript">
-        store = new MemoryBackend().objectStore('test', {keyPath: '_id'});
-        run_tests(store, 'Memory');
-	
 		var port = 12345,
 			ElasticSearchUrl = 'http://localhost:9200/test';
 
-		store = new RestBackend({url: 'http://localhost:'+port}).objectStore('test', {keyPath: '_id'});
-		run_tests(store, 'Rest');
+		function run(run_tests) {
+	        store = new MemoryBackend().objectStore('test', {keyPath: '_id'});
+	        run_tests(store, 'Memory');
 
-		// hooks to refresh ElasticSearch indices
-		QUnit.moduleStart = function(res) {
-			if (res && res.name === 'ElasticSearch: CRUD') {
-				delete QUnit.moduleStart;
-				QUnit.testDone = function() {
-					QUnit.stop();
-					$.post(ElasticSearchUrl+'/_refresh', function() {
-						QUnit.start();
-					});
-				};
-				QUnit.moduleDone = function(res) {
-					if (res && res.name === 'ElasticSearch: Querying') {
-						delete QUnit.testDone;
-						delete QUnit.moduleDone;
-					}
-				};
-			}
-		};
-		store = new ElasticSearchBackend({url: ElasticSearchUrl}).objectStore('test');
-		run_tests(store, 'ElasticSearch');
+			store = new RestBackend({url: 'http://localhost:'+port}).objectStore('test', {keyPath: '_id'});
+			run_tests(store, 'Rest');
 
-		store = new LocalBackend().objectStore('local', {keyPath: '_id'});
-		run_tests(store, 'Local - local');
+			// hooks to refresh ElasticSearch indices
+			QUnit.moduleStart = function(res) {
+				if (res && res.name === 'ElasticSearch: CRUD') {
+					delete QUnit.moduleStart;
+					QUnit.testDone = function() {
+						QUnit.stop();
+						$.post(ElasticSearchUrl+'/_refresh', function() {
+							QUnit.start();
+						});
+					};
+					QUnit.moduleDone = function(res) {
+						if (res && res.name === 'ElasticSearch: Querying') {
+							delete QUnit.testDone;
+							delete QUnit.moduleDone;
+						}
+					};
+				}
+			};
+			store = new ElasticSearchBackend({url: ElasticSearchUrl}).objectStore('test');
+			run_tests(store, 'ElasticSearch');
 
-		store = new LocalBackend().objectStore('session', {keyPath: '_id'});
-		run_tests(store, 'Local - session');
+			store = new LocalBackend().objectStore('local', {keyPath: '_id'});
+			run_tests(store, 'Local - local');
 
+			store = new LocalBackend().objectStore('session', {keyPath: '_id'});
+			run_tests(store, 'Local - session');
+		}
+		run(run_tests);
 		run_tests_memory({url: 'http://localhost:'+port});
-	</script>
+		run_tests_rql_builder(_);
 
+	</script>
 	<script type="text/javascript" src="browser/backbone-test.js"></script>
 </head>
 <body>
