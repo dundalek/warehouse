@@ -124,7 +124,7 @@ var MemoryStore = BaseBackend.BaseStore.extend(
             } catch(e) {
             }
         } else if (typeof data === 'object') {
-            if (this.constructor && this.constructor.name === 'Array') {
+            if (data.constructor && data.constructor.name === 'Array') {
                 for (var i = 0; i < data.length; i++) {
                     ret[this._getObjectKey(data[i]) || i] = data[i];
                 }
