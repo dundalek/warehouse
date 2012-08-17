@@ -7,7 +7,9 @@ Run `node backend-run.js` for running tests, all should pass.
 
 ## Browser
 
-Run `node backend-run.js` and then open http://localhost:12345/ in browser for running tests, all should pass.
+Run `node browser-run.js` and then open <http://localhost:12345/> in browser for running tests, all should pass.
+
+RQL tests are at <http://localhost:12345/tests/rql.html>
 
 ## RQL
 

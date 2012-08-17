@@ -1,5 +1,9 @@
 var testrunner = require("qunit");
 
+if (process.argv.indexOf('--dbg') !== -1) {
+    testrunner.options.debug = true;
+}
+
 testrunner.run({
     code: "./backend/mysql-init.js",
     tests: ["./test.js"]

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>QUnit Test Suite</title>
+	<link rel="stylesheet" href="vendor/qunit/qunit.css">
+	<script type="text/javascript" src="vendor/jquery.js"></script>
+	<script type="text/javascript" src="vendor/qunit/qunit.js"></script>
+
+	<script type="text/javascript" src="vendor/underscore.js"></script>
+		<script type="text/javascript" src="vendor/backbone.js"></script>
+	<script type="text/javascript" src="../node_modules/underscore-data/underscore-data.js"></script>
+	<script type="text/javascript" src="../node_modules/q/q.js"></script>
+	<script type="text/javascript" src="../backend/base.js"></script>
+	<script type="text/javascript" src="../backend/memory.js"></script>
+	<script type="text/javascript" src="../backend/rest.js"></script>
+	<script type="text/javascript" src="../rql/elasticsearch.js"></script>
+	<script type="text/javascript" src="../backend/elasticsearch.js"></script>
+	<script type="text/javascript" src="../backend/local.js"></script>
+	<script type="text/javascript" src="rql.js"></script>
+	<script type="text/javascript">
+		var port = 12345,
+			ElasticSearchUrl = 'http://localhost:9200/test';
+
+		function run(run_tests) {
+	        store = new MemoryBackend().objectStore('test', {keyPath: '_id'});
+	        run_tests(store, 'Memory');
+
+			store = new RestBackend({url: 'http://localhost:'+port}).objectStore('test', {keyPath: '_id'});
+			run_tests(store, 'Rest');
+
+			// // hooks to refresh ElasticSearch indices
+			// QUnit.moduleStart = function(res) {
+			// 	if (res && res.name === 'ElasticSearch: CRUD') {
+			// 		delete QUnit.moduleStart;
+			// 		QUnit.testDone = function() {
+			// 			QUnit.stop();
+			// 			$.post(ElasticSearchUrl+'/_refresh', function() {
+			// 				QUnit.start();
+			// 			});
+			// 		};
+			// 		QUnit.moduleDone = function(res) {
+			// 			if (res && res.name === 'ElasticSearch: Querying') {
+			// 				delete QUnit.testDone;
+			// 				delete QUnit.moduleDone;
+			// 			}
+			// 		};
+			// 	}
+			// };
+			// store = new ElasticSearchBackend({url: ElasticSearchUrl}).objectStore('test');
+			// run_tests(store, 'ElasticSearch');
+
+			// store = new LocalBackend().objectStore('local', {keyPath: '_id'});
+			// run_tests(store, 'Local - local');
+
+			// store = new LocalBackend().objectStore('session', {keyPath: '_id'});
+			// run_tests(store, 'Local - session');			
+		}
+		run(run_tests_rql);
+	</script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture">test markup</div>
+</body>
+</html>
