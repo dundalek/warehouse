@@ -5,7 +5,8 @@
     //     module.exports = factory(require('q'), require('underscore-data'), require('..').extend);
     // } else {
         // running in browser
-        window.LocalBackend = factory(Q, _, BaseBackend);
+        window.warehouse = window.warehouse || {};
+        window.warehouse.LocalBackend = factory(Q, _, warehouse.BaseBackend);
     // }
 })(function(Q, _, BaseBackend) {
 

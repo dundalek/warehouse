@@ -32,7 +32,8 @@
             }
             return Q.when($.ajax(obj));
         };
-        window.ElasticSearchBackend = factory(ajax, _, BaseBackend, rql2es);
+        window.warehouse = window.warehouse || {};
+        window.warehouse.ElasticSearchBackend = factory(ajax, _, warehouse.BaseBackend, warehouse.rql2es);
     }
 })(function(ajax, _, BaseBackend, rql2es) {
 

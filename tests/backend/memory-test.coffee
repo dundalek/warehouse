@@ -1,5 +1,5 @@
 
-@run_tests_memory = ->
+@run_tests_memory = (constructor) ->
 	module = QUnit.module
 
 	dataOrig = [
@@ -12,7 +12,7 @@
 		deepEqual data, dataOrig
 
 	testData = (data) ->
-		backend = new MemoryBackend()
+		backend = new constructor()
 
 		store = backend.objectStore('item', {json: data})
 		store.query().then (qdata) ->
@@ -58,4 +58,4 @@
 		testData data
 
 if typeof require != 'undefined'
-    @run_tests_memory()
+    @run_tests_memory(require('../../backend/memory'))

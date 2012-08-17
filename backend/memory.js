@@ -5,7 +5,8 @@
         module.exports = factory(require('q'), require('underscore-data'), require('./base'));
     } else {
         // running in browser
-        window.MemoryBackend = factory(Q, _, BaseBackend);
+        window.warehouse = window.warehouse || {};
+        window.warehouse.MemoryBackend = factory(Q, _, warehouse.BaseBackend);
     }
 })(function(Q, _, BaseBackend) {
 

@@ -26,10 +26,10 @@
 			ElasticSearchUrl = 'http://localhost:9200/test';
 
 		function run(run_tests) {
-	        store = new MemoryBackend().objectStore('test', {keyPath: '_id'});
+	        store = new warehouse.MemoryBackend().objectStore('test', {keyPath: '_id'});
 	        run_tests(store, 'Memory');
 
-			store = new RestBackend({url: 'http://localhost:'+port}).objectStore('test', {keyPath: '_id'});
+			store = new warehouse.RestBackend({url: 'http://localhost:'+port}).objectStore('test', {keyPath: '_id'});
 			run_tests(store, 'Rest');
 
 			// hooks to refresh ElasticSearch indices
@@ -50,17 +50,17 @@
 					};
 				}
 			};
-			store = new ElasticSearchBackend({url: ElasticSearchUrl}).objectStore('test');
+			store = new warehouse.ElasticSearchBackend({url: ElasticSearchUrl}).objectStore('test');
 			run_tests(store, 'ElasticSearch');
 
-			store = new LocalBackend().objectStore('local', {keyPath: '_id'});
+			store = new warehouse.LocalBackend().objectStore('local', {keyPath: '_id'});
 			run_tests(store, 'Local - local');
 
-			store = new LocalBackend().objectStore('session', {keyPath: '_id'});
+			store = new warehouse.LocalBackend().objectStore('session', {keyPath: '_id'});
 			run_tests(store, 'Local - session');
 		}
 		run(run_tests);
-		run_tests_memory({url: 'http://localhost:'+port});
+		run_tests_memory(warehouse.MemoryBackend);
 		run_tests_rql_builder(_);
 
 	</script>
