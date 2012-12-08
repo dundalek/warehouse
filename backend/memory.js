@@ -10,6 +10,12 @@
     }
 })(function(Q, _, BaseBackend) {
 
+function resolvedPromise(val) {
+    var d = Q.defer();
+    d.resolve(val);
+    return d.promise;
+}
+
 /** @class MemoryBackend */
 var MemoryBackend = BaseBackend.extend(
 /** @lends MemoryBackend# */
@@ -23,8 +29,7 @@ var MemoryBackend = BaseBackend.extend(
 
     /** */
     objectStoreNames: function() {
-        return Q.defer()
-                .resolve(_.keys(this._stores));
+        return resolvedPromise(_.keys(this._stores));
     },
 
     /** */
@@ -37,14 +42,12 @@ var MemoryBackend = BaseBackend.extend(
 
     /** */
     createObjectStore: function(name, options) {
-        return Q.defer()
-                .resolve(this.objectStore(name, options));
+        return resolvedPromise(this.objectStore(name, options));
     },
 
     /** */
     deleteObjectStore: function(name) {
-        return Q.defer()
-                .resolve(delete this._stores[name]);
+        return resolvedPromise(delete this._stores[name]);
     }
 });
 
@@ -65,8 +68,7 @@ var MemoryStore = BaseBackend.BaseStore.extend(
     get: function(directives) {
         var key = this._getObjectKey({}, directives);
 
-        return Q.defer()
-                .resolve(this._store[key]);
+        return resolvedPromise(this._store[key]);
     },
 
     /** */
@@ -76,8 +78,7 @@ var MemoryStore = BaseBackend.BaseStore.extend(
 
         this._store[key] = object;
 
-        return Q.defer()
-                .resolve(object);
+        return resolvedPromise(object);
     },
 
     /** */
@@ -87,8 +88,7 @@ var MemoryStore = BaseBackend.BaseStore.extend(
 
         this._store[key] = object;
 
-        return Q.defer()
-                .resolve(object);
+        return resolvedPromise(object);
     },
 
     /** */
@@ -98,21 +98,18 @@ var MemoryStore = BaseBackend.BaseStore.extend(
         var val = this._store[key] && delete (this._store)[key];
         val = val ? 1 : 0;
 
-        return Q.defer()
-                .resolve(val);
+        return resolvedPromise(val);
     },
 
     /** Execute RQL query */
     query: function(query) {
-        return Q.defer()
-                .resolve(_.query(_.values(this._store), query));
+        return resolvedPromise(_.query(_.values(this._store), query));
     },
 
     /** Delete all items */
     clear: function() {
         this._store = {};
-        return Q.defer()
-                .resolve(true);
+        return resolvedPromise(true);
     },
 
     /** */
