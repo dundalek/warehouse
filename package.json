@@ -22,7 +22,7 @@
         "request": ">=2.9.202",
         "mongodb": ">=1.0.2",
         "persist": ">=0.2.4",
-        "mysql": ">=0.9.6",
+        "mysql": "<1",
         "sqlite3": ">=2.1.5"
     },
     "directories": {
