@@ -63,14 +63,14 @@ var SqlBackend = BaseBackend.extend(
     /** */
     runSql: function(sql, values) {
         return this.open().then(function(connection) {
-            return Q.ncall(connection.runSql, connection, sql, values||[]);
+            return Q.ninvoke(connection, 'runSql', sql, values||[]);
         });
     },
 
     /** */
     runSqlAll: function(sql, values) {
         return this.open().then(function(connection) {
-            return Q.ncall(connection.runSqlAll, connection, sql, values||[]);
+            return Q.ninvoke(connection, 'runSqlAll', sql, values||[]);
         });
     },
 });

@@ -3,7 +3,7 @@ var MemoryBackend = require('../../backend/memory'),
 	RestBackend = require('../../backend/rest'),
 	warehouse = require('../..'),
 	express = require('express'),
-	app = express.createServer(),
+	app = express(),
 	server = new MemoryBackend().objectStore('test', {keyPath: '_id'});
 
 var port = 12346;

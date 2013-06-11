@@ -13,7 +13,7 @@ var SqlBackend = require('../../backend/sql'),
 
 exports.setup = function() {
 	return store.connection().then(function(connection) {
-		return Q.ncall(connection.runSql, connection,
+		return Q.ninvoke(connection, 'runSql',
 		    'CREATE TABLE IF NOT EXISTS `test` (' +
 		    '  `_id` int(11) NOT NULL,' +
 		    '  `firstname` varchar(255) NOT NULL,' +

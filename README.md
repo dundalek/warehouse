@@ -12,7 +12,7 @@ Make a quick protoype of your application without using an external database. Th
 
 ## Install
 ```
-npm install git://github.com/dundalek/warehouse.git
+npm install warehousejs
 ```
 
 ## REST server with express in node.js
@@ -20,8 +20,8 @@ npm install git://github.com/dundalek/warehouse.git
 ```javascript
 
 var express = require('express'),
-    warehouse = require('warehouse'),
-    MongoBackend = require('warehouse/backend/mongodb');
+    warehouse = require('warehousejs'),
+    MongoBackend = require('warehousejs/backend/mongodb');
 
 var app = express.createServer(),
     store = new MongoBackend().objectStore('item');
@@ -164,7 +164,7 @@ var options = {
     password: 'pass'
 };
 
-var MongoBackend = require('warehouse/backend/mongodb'),
+var MongoBackend = require('warehousejs/backend/mongodb'),
     backend = new MongoBackend(options),
     store = backend.objectStore('item');
 ```
@@ -209,7 +209,7 @@ var options = {
     filename: '/path/to/file.db',
 };
 
-var SqlBackend = require('warehouse/backend/sql'),
+var SqlBackend = require('warehousejs/backend/sql'),
     backend = new SqlBackend(options),
     store = backend.objectStore('item');
 ```
@@ -241,7 +241,7 @@ Pass _url_ option to specify remote server address.
 
 ```javascript
 
-var ElasticSearchBackend = require('warehouse/backend/elasticsearch'),
+var ElasticSearchBackend = require('warehousejs/backend/elasticsearch'),
     backend = new ElasticSearchBackend({url: 'http://example.com/index'}),
     store = backend.objectStore('item');
 ```
@@ -264,7 +264,7 @@ You can alternatively use _fromJson_ and _getJSON_
 
 ```javascript
 
-var MemoryBackend = require('warehouse/backend/memory'),
+var MemoryBackend = require('warehousejs/backend/memory'),
     backend = new MemoryBackend(),
     store, data;
 
@@ -306,7 +306,7 @@ Pass _url_ option to specify remote server address (default is '/').
 
 ```javascript
 
-var RestBackend = require('warehouse/backend/rest'),
+var RestBackend = require('warehousejs/backend/rest'),
     backend = new RestBackend({url: 'http://example.com'}),
     store = backend.objectStore('item');
 ```
@@ -324,7 +324,7 @@ This backend works only in browser.
 
 ```javascript
 
-var LocalBackend = require('warehouse/backend/local'),
+var LocalBackend = require('warehousejs/backend/local'),
     backend = new LocalBackend();
 
 // session only

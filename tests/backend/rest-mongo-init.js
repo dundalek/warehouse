@@ -3,7 +3,7 @@ var MongoBackend = require('../../backend/mongodb'),
 	RestBackend = require('../../backend/rest'),
 	warehouse = require('../..'),
 	express = require('express'),
-	app = express.createServer(),
+	app = express(),
 	server = new MongoBackend({
         host: 'localhost',
         port: 27017,

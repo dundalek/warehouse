@@ -25,7 +25,7 @@ var MongoBackend = BaseBackend.extend(
     /** */
     objectStoreNames: function() {
         return this.open().then(function(db) {
-            return Q.ncall(db.collectionNames, db);
+            return Q.ninvoke(db, 'collectionNames');
         });
     },
 
@@ -37,7 +37,7 @@ var MongoBackend = BaseBackend.extend(
     /** */
     createObjectStore: function(name, options) {
         return this.open().then(function(db) {
-            return Q.ncall(db.collection, db, name).then(function() {
+            return Q.ninvoke(db, 'collection', name).then(function() {
                 return new MongoStore(this, name, options);
             });
         });
@@ -46,7 +46,7 @@ var MongoBackend = BaseBackend.extend(
     /** */
     deleteObjectStore: function(name) {
         return this.open().then(function(db) {
-            return Q.ncall(db.dropCollection, db, name);
+            return Q.ninvoke(db, 'dropCollection', name);
         });
     },
 
@@ -54,10 +54,10 @@ var MongoBackend = BaseBackend.extend(
     open: function() {
         var self = this;
         if (!this._opened) {
-            this._opened = Q.ncall(this._db.open, this._db)
+            this._opened = Q.ninvoke(this._db, 'open')
                 .then(function (db) {
                     if (self.options.username) {
-                        return Q.ncall(db.authenticate, db, self.options.username, self.options.password)
+                        return Q.ninvoke(db, 'authenticate', self.options.username, self.options.password)
                                 .then(function() {
                                     return db;
                                 });
@@ -73,7 +73,7 @@ var MongoBackend = BaseBackend.extend(
     close: function() {
         if (this._opened) {
             this._opened = false;
-            return Q.ncall(this._db.close, this._db);
+            return Q.ninvoke(this._db, 'close');
         }
     },
 
@@ -107,7 +107,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
         var search = {};
         search[this.keyPath] = this._getObjectKey({}, directives);
         return this.collection().then(function(collection) {
-            return Q.ncall(collection.findOne, collection, search);
+            return Q.ninvoke(collection, 'findOne', search);
         });
     },
 
@@ -116,7 +116,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
         //var key = this._getObjectKey(object, directives);
 
         return this.collection().then(function(collection) {
-            return Q.ncall(collection.insert, collection, object, {safe:true})
+            return Q.ninvoke(collection, 'insert', object, {safe:true})
                     .then(function(result) {
                         return result[0] || object;
                     });
@@ -129,7 +129,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
             selector = {};
         selector[this.keyPath] = key;
         return this.collection().then(function(collection) {
-            return Q.ncall(collection.update, collection, selector, object, {safe:true})
+            return Q.ninvoke(collection, 'update', selector, object, {safe:true})
                     .then(function(result) {
                         return object;
                     });
@@ -141,7 +141,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
         var search = {};
         search[this.keyPath] = this._getObjectKey({}, directives);
         return this.collection().then(function(collection) {
-            return Q.ncall(collection.remove, collection, search, {safe:true, single: true});
+            return Q.ninvoke(collection, 'remove', search, {safe:true, single: true});
         });
     },
 
@@ -156,9 +156,9 @@ var MongoStore = BaseBackend.BaseStore.extend(
         }
 
         return this.collection().then(function(collection) {
-            return Q.ncall(collection.find, collection, search||{}, meta||{})
+            return Q.ninvoke(collection, 'find', search||{}, meta||{})
                     .then(function(cursor) {
-                        return Q.ncall(cursor.toArray, cursor);
+                        return Q.ninvoke(cursor, 'toArray');
                     });
         });
     },
@@ -173,7 +173,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
         if (!this._collection) {
             var self = this;
             this._collection = this.db().then(function(db) {
-                return Q.ncall(db.collection, db, self.name);
+                return Q.ninvoke(db, 'collection', self.name);
             });
         }
         return this._collection;
@@ -182,7 +182,7 @@ var MongoStore = BaseBackend.BaseStore.extend(
     /** Delete all items */
     clear: function() {
         return this.collection().then(function(collection) {
-            return Q.ncall(collection.remove, collection, {}, {safe: true});
+            return Q.ninvoke(collection, 'remove', {}, {safe: true});
         });
     },
 

@@ -10,7 +10,7 @@
                 url: url,
                 json: data
             };
-            return Q.ncall(require('request'), this, obj)
+            return Q.nfcall(require('request'), obj)
                     .then(function(response) {
                         var body = response[1];
                         return typeof body === 'string' ? JSON.parse(body) : body;

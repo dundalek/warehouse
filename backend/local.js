@@ -10,6 +10,12 @@
     // }
 })(function(Q, _, BaseBackend) {
 
+function resolvedPromise(val) {
+    var d = Q.defer();
+    d.resolve(val);
+    return d.promise;
+}
+
 /** @class LocalBackend */
 var LocalBackend = BaseBackend.extend(
 /** @lends LocalBackend# */
@@ -35,14 +41,12 @@ var LocalBackend = BaseBackend.extend(
 
     /** */
     createObjectStore: function(name, options) {
-        return Q.defer()
-                .resolve(this.objectStore(name, options));
+        return resolvedPromise(this.objectStore(name, options));
     },
 
     /** */
     deleteObjectStore: function(name) {
-        return Q.defer()
-                .resolve(this.objectStore(name).clear());
+        return resolvedPromise(this.objectStore(name).clear());
     }
 });
 
@@ -63,8 +67,7 @@ var LocalStore = BaseBackend.BaseStore.extend(
     get: function(directives) {
         var key = this._getObjectKey({}, directives);
 
-        return Q.defer()
-                .resolve(JSON.parse(this._store.getItem(key)));
+        return resolvedPromise(JSON.parse(this._store.getItem(key)));
     },
 
     /** */
@@ -79,8 +82,7 @@ var LocalStore = BaseBackend.BaseStore.extend(
 
         this._store.setItem(key, JSON.stringify(object));
 
-        return Q.defer()
-                .resolve(object);
+        return resolvedPromise(object);
     },
 
     /** */
@@ -90,8 +92,7 @@ var LocalStore = BaseBackend.BaseStore.extend(
         val = this._store.getItem(key) ? 1 : 0;
         this._store.removeItem(key);
 
-        return Q.defer()
-                .resolve(val);
+        return resolvedPromise(val);
     },
 
     /** Execute RQL query */
@@ -100,15 +101,13 @@ var LocalStore = BaseBackend.BaseStore.extend(
         for (var i = 0; i < this._store.length; i++) {
             items.push(JSON.parse(this._store.getItem(this._store.key(i))));
         }
-        return Q.defer()
-                .resolve(_.query(items, query));
+        return resolvedPromise(_.query(items, query));
     },
 
     /** Delete all items */
     clear: function() {
         this._store.clear();
-        return Q.defer()
-                .resolve(true);
+        return resolvedPromise(true);
     }
 });
 

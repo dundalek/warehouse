@@ -4,7 +4,7 @@ var MemoryBackend = require('../backend/memory'),
 	warehouse = require('..'),
 	express = require('express'),
 	_ = require('underscore'),
-	app = express.createServer(),
+	app = express(),
 	server = new MemoryBackend().objectStore('test', {keyPath: '_id'});
 
 var port = 12345;
