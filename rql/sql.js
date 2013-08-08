@@ -202,6 +202,10 @@ var toSQL = function(options) {
                       });
                   };
                   break;
+              case "search":
+                  safeSqlName(column);
+                  addClause("MATCH (" + column + ") AGAINST (" + valueToSql(term.args[1]) + " IN BOOLEAN MODE)");
+                  break;
               default:
                   throw new URIError("Invalid query syntax, " + term.name+ " not implemented");
           }
