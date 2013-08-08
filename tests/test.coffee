@@ -8,9 +8,12 @@
     eq = strictEqual
     deq = deepEqual
 
-    john = {_id: 1, firstname: 'John', lastname: 'Silver', age: 30}
-    james = {_id: 2, firstname: 'James', lastname: 'Wood', age: 42}
-    jane = {_id: 3, firstname: 'Jane', lastname: 'White', age: 28}
+    john = {firstname: 'John', lastname: 'Silver', age: 30}
+    john[store.keyPath] = 1
+    james = {firstname: 'James', lastname: 'Wood', age: 42}
+    james[store.keyPath] = 2
+    jane = {firstname: 'Jane', lastname: 'White', age: 28}
+    jane[store.keyPath] = 3
 
     config_reorder = QUnit.config.reorder
     config_autostart = QUnit.config.autostart
