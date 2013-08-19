@@ -16,66 +16,66 @@ function rql2es(query) {
 
     function convertRql(query) {
         query.args.forEach(function(term, index) {
-        	var column = term.args[0];
+            var column = term.args[0];
             switch (term.name) {
-            	case "select":
-            		q.fields = term.args;
-            		break;
+                case "select":
+                    q.fields = term.args;
+                    break;
                 case "eq":
                     _query.text = _query.text || {};
                     _query.text[term.args[0]] = term.args[1];
                 break;
                 case "ne":
-                	var tmp = {};
-                	tmp[term.args[0]] = term.args[1];
+                    var tmp = {};
+                    tmp[term.args[0]] = term.args[1];
 
-                	q.filter = q.filter || {};
-                	q.filter.not = q.filter.not || {};
-                	q.filter.not.query = q.filter.not.query || {};
-                	q.filter.not.query.text = q.filter.not.query.text || {};
-                	q.filter.not.query.text = tmp;
+                    q.filter = q.filter || {};
+                    q.filter.not = q.filter.not || {};
+                    q.filter.not.query = q.filter.not.query || {};
+                    q.filter.not.query.text = q.filter.not.query.text || {};
+                    q.filter.not.query.text = tmp;
                 break;
                 case "lt":
                 case "gt":
                 case "le":
                 case "ge":
-                	if (term.name[1] === 'e') {
-                		term.name = term.name[0] + 'te';
-                	}
-                	q.filter = q.filter || {};
-                	q.filter.range = q.filter.range || {};
-                	q.filter.range[term.args[0]] = q.filter.range[term.args[0]] || {};
-                	q.filter.range[term.args[0]][term.name] = term.args[1];
+                    if (term.name[1] === 'e') {
+                        term.name = term.name[0] + 'te';
+                    }
+                    q.filter = q.filter || {};
+                    q.filter.range = q.filter.range || {};
+                    q.filter.range[term.args[0]] = q.filter.range[term.args[0]] || {};
+                    q.filter.range[term.args[0]][term.name] = term.args[1];
 
-                	break;
+                    break;
                 case "in":
-                	tmp = term.args[1].map(function(x) {
-                		var a = {};
-                		a[column] = x;
-                		return {text: a};
-                	});
+                    tmp = term.args[1].map(function(x) {
+                        var a = {};
+                        a[column] = x;
+                        return {text: a};
+                    });
 
-                	_query.bool = _query.bool || {};
-                	_query.bool.should = _query.bool.should || [];
-                	_query.bool.should = _query.bool.should.concat(tmp);
-                	break;
-				case "out":
-                	tmp = term.args[1].map(function(x) {
-                		var a = {};
-                		a[column] = x;
-                		return {text: a};
-                	});
+                    _query.bool = _query.bool || {};
+                    _query.bool.should = _query.bool.should || [];
+                    _query.bool.should = _query.bool.should.concat(tmp);
+                    break;
+                case "out":
+                    tmp = term.args[1].map(function(x) {
+                        var a = {};
+                        a[column] = x;
+                        return {text: a};
+                    });
 
-                	q.filter = q.filter || {};
-                	q.filter.not = q.filter.not || {};
-                	q.filter.not.query = q.filter.not.query || {};
+                    q.filter = q.filter || {};
+                    q.filter.not = q.filter.not || {};
+                    q.filter.not.query = q.filter.not.query || {};
 
-                	var __query = q.filter.not.query;
+                    var __query = q.filter.not.query;
 
-                	__query.bool = __query.bool || {};
-                	__query.bool.should = __query.bool.should || [];
-                	__query.bool.should = __query.bool.should.concat(tmp);
-                	break;
+                    __query.bool = __query.bool || {};
+                    __query.bool.should = __query.bool.should || [];
+                    __query.bool.should = __query.bool.should.concat(tmp);
+                    break;
                 case "sort":
                     if(term.args.length === 0)
                           throw new URIError("Must specify a sort criteria");
@@ -88,7 +88,7 @@ function rql2es(query) {
                           }
                           sortAttribute = sortAttribute.substring(1);
                           if (sortAttribute === '_id') {
-                          	sortAttribute = '_uid';
+                              sortAttribute = '_uid';
                           }
                       }
                       var obj = {};
@@ -96,7 +96,7 @@ function rql2es(query) {
                       sort.push(obj);
                   });
                 break;
-				case "limit":
+                case "limit":
                   q.size = term.args[0];
                   q.from = term.args[1] || 0;
                   break;

@@ -118,7 +118,7 @@ var MemoryStore = BaseBackend.BaseStore.extend(
         if (typeof data === 'string') {
             try {
                 this.fromJSON(JSON.parse(data));
-                return
+                return;
             } catch(e) {
             }
         } else if (typeof data === 'object') {

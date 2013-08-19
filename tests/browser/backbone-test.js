@@ -12,7 +12,7 @@ $(document).ready(function() {
 
   var test = function(name, expected, fn) {
       asyncTest(name, expected+2, fn);
-  }
+  };
 
 function asyncCheck(data, serverData) {
     if (serverData === undefined) {
@@ -30,7 +30,7 @@ function asyncCheck(data, serverData) {
   function asyncCheckCallbak(data, serverData) {
     return function() {
       asyncCheck(data, serverData);
-    }
+    };
   }
 
   var attrs = {

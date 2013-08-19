@@ -83,7 +83,7 @@ var toSQL = function(options) {
           switch(term.name){
               case "eq":
                   if(term.args[1] instanceof Array){
-                      if(term.args[1].length == 0){
+                      if(term.args[1].length === 0){
                           // an empty IN clause is considered invalid SQL
                           if(index > 0){
                               where += " " + conjunction + " ";
@@ -124,7 +124,7 @@ var toSQL = function(options) {
                   break;
               case "in":
                   //print("in() is deprecated");
-                  if(term.args[1].length == 0){
+                  if(term.args[1].length === 0){
                       // an empty IN clause is considered invalid SQL
                       if(index > 0){
                           where += " " + conjunction + " ";
@@ -138,7 +138,7 @@ var toSQL = function(options) {
                   break;
               case "out":
                   //print("in() is deprecated");
-                  if(term.args[1].length == 0){
+                  if(term.args[1].length === 0){
                       // an empty IN clause is considered invalid SQL
                       if(index > 0){
                           where += " " + conjunction + " ";

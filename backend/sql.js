@@ -20,8 +20,8 @@ var SqlBackend = BaseBackend.extend(
 
     /** */
     objectStoreNames: function() {
-        var sql = (this.options.driver === 'sqlite3')
-            ? "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+        var sql = (this.options.driver === 'sqlite3') ? 
+              "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
             : "SHOW TABLES;";
         return this.runSqlAll(sql);
     },
@@ -113,7 +113,7 @@ var SqlStore = BaseBackend.BaseStore.extend(
         var sql = util.format('INSERT INTO %s (%s) VALUES (%s);',
                               this.escapeIdentifier(this.name),
                               placeholders.join(','),
-                              args.map(function() {return '?'}).join(','));
+                              args.map(function() {return '?';}).join(','));
 
         return this.runSql(sql, args)
             .then(function(result) {

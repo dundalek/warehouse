@@ -3,7 +3,7 @@ var SqlBackend = require('../../backend/sql'),
     Q = require('q'),
     backend = new SqlBackend({
         driver: 'sqlite3',
-    	filename: '/tmp/sqlite.db'
+        filename: '/tmp/sqlite.db'
     }),
     store = backend.objectStore('test', {keyPath: '_id'});
 
@@ -17,7 +17,7 @@ exports.setup = function() {
                 '  `age` int(11) NOT NULL' +
                 ');');
         });
-}
+};
 
 exports.name = 'SqlStore: Sqlite3';
 exports.store = store;
