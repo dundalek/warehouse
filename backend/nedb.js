@@ -65,7 +65,7 @@ var NeStore = BaseBackend.BaseStore.extend(
             selector = {};
         selector[this.keyPath] = key;
         return this.collection().then(function(collection) {
-            return Q.ninvoke(collection, 'update', selector, object)
+            return Q.ninvoke(collection, 'update', selector, object, {})
                     .then(function(result) {
                         return object;
                     });
@@ -94,7 +94,9 @@ var NeStore = BaseBackend.BaseStore.extend(
         return this.collection().then(function(collection) {
             return Q.ninvoke(collection, 'find', search||{}/*, meta||{}*/)
                     .then(function(result) {
-                        return result;
+                        // run through _.query to enable sorting which is not yet implemented in NeDB
+                        // see https://github.com/louischatriot/nedb/issues/64
+                        return _.query(result, query);
                     });
         });
     },
