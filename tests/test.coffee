@@ -9,11 +9,11 @@
     deq = deepEqual
 
     john = {firstname: 'John', lastname: 'Silver', age: 30}
-    john[store.keyPath] = 1
+    john_id = john[store.keyPath] = 1
     james = {firstname: 'James', lastname: 'Wood', age: 42}
-    james[store.keyPath] = 2
+    james_id = james[store.keyPath] = 2
     jane = {firstname: 'Jane', lastname: 'White', age: 28}
-    jane[store.keyPath] = 3
+    jane_id = jane[store.keyPath] = 3
 
     config_reorder = QUnit.config.reorder
     config_autostart = QUnit.config.autostart
@@ -56,16 +56,17 @@
         checkFail store.add(john)
             .then (res) ->
                 deq res, john
+                john_id = res[store.keyPath]
                 start()
 
     asyncTest 'get item', ->
-        checkFail store.get(1)
+        checkFail store.get(john_id)
             .then (res) ->
                 deepEqual res, john
                 start()
 
     asyncTest 'get item type coerce', ->
-        checkFail store.get('1')
+        checkFail store.get(''+john_id)
             .then (res) ->
                 deepEqual res, john
                 start()
@@ -81,6 +82,7 @@
         checkFail store.add(james)
             .then (res) ->
                 deq res, james
+                james_id = res[store.keyPath]
                 start()
 
     # asyncTest 'error when updating non existing item', ->
@@ -93,13 +95,13 @@
     asyncTest 'update item', ->
         john.age = 35
 
-        checkFail store.put(john, john._id)
+        checkFail store.put(john, john_id)
             .then (res) ->
                 deq res, john
                 start()
 
     asyncTest 'get item', ->
-        checkFail store.get(1)
+        checkFail store.get(john_id)
             .then (res) ->
                 deepEqual res, john
                 start()
@@ -108,16 +110,17 @@
         checkFail store.add(jane)
             .then (res) ->
                 deq res, jane
+                jane_id = res[store.keyPath]
                 start()
 
     asyncTest 'find by id', ->
-        checkFail store.query('_id=2')
+        checkFail store.query(store.keyPath + '=' + james_id)
             .then (res) ->
                 deq res, [james]
                 start()
 
     asyncTest 'delete', ->
-        checkFail store.delete(2)
+        checkFail store.delete(james_id)
             .then (res) ->
                 deq res, 1
                 start()
