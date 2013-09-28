@@ -26,12 +26,14 @@ var FsBackend = BaseBackend.extend(
 
     /** */
     objectStore: function(name, options) {
+        name = path.basename(name);
         return new FsStore(this, name, options);
     },
 
     /** */
     createObjectStore: function(name, options) {
         var d = Q.defer();
+        name = path.basename(name);
         fs.mkdir(path.join(this.options.path, name), function() {
             d.resolve(this.objectStore(name, options));
         }.bind(this));
@@ -40,9 +42,10 @@ var FsBackend = BaseBackend.extend(
 
     /** */
     deleteObjectStore: function(name) {
-        // store clear
-        return Q.ninvoke(fs, 'rmdir', path.join(this.options.path, name));
-        
+        name = path.basename(name);
+        this.objectStore(name).clear().then(function() {
+            return Q.ninvoke(fs, 'rmdir', path.join(this.options.path, name));
+        });
     },
     encode: JSON.stringify,
     decode: JSON.parse
@@ -131,7 +134,8 @@ var FsStore = BaseBackend.BaseStore.extend(
     },
 
     filename: function(file) {
-        return path.join(this.backend.options.path, this.name, ''+file);
+
+        return path.join(this.backend.options.path, this.name, ''+path.basename(file));
     } 
 });
 
