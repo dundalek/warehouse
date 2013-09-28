@@ -143,6 +143,7 @@ Common attributes:
 - [MongoDB](#mongodb) (server)
 - [SQL](#sql) (server)
 - [Elastic Search](#elasticsearch) (server and browser)
+- [NeDB](#nedb) (server and browser)
 - [Memory](#memory) (server and browser)
 - [REST](#rest) (server and browser)
 - [Local Storage](#local-storage) (browser)
@@ -245,6 +246,26 @@ var ElasticSearchBackend = require('warehousejs/backend/elasticsearch'),
     backend = new ElasticSearchBackend({url: 'http://example.com/index'}),
     store = backend.objectStore('item');
 ```
+
+### NeDB
+
+Backend for [NeDB](https://github.com/louischatriot/nedb/).
+
+```javascript
+
+var NeBackend = require('warehousejs/backend/nedb'),
+    backend = new NeBackend(),
+    store = backend.objectStore('', options);
+```
+
+Be default the datastire is in-memory only. You can specify `filename` option for the persistent datastore.
+
+```javascript
+
+store = backend.objectStore('', {filename: 'path/to/datafile'});
+```
+
+Popsat id?
 
 ### Memory
 
