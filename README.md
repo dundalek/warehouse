@@ -58,7 +58,7 @@ john.save();
 
 ## CRUD
 
-The API is similar to [IndexedDB](http://www.w3.org/TR/IndexedDB/) API (_add_, _get_, _put_, _delete_). It is based on asynchronous promises (using [Q](http://github.com/kriskowal/q/) library).
+The API is similar to [IndexedDB](http://www.w3.org/TR/IndexedDB/) API ( _add_, _get_, _put_, _delete_ ). It is based on asynchronous promises (using [Q](http://github.com/kriskowal/q/) library).
 
 ```javascript
 
@@ -142,6 +142,7 @@ Common attributes:
 
 - [MongoDB](#mongodb) (server)
 - [SQL](#sql) (server)
+- [Filesystem](#filesystem) (server)
 - [Elastic Search](#elasticsearch) (server and browser)
 - [NeDB](#nedb) (server and browser)
 - [Memory](#memory) (server and browser)
@@ -232,6 +233,21 @@ store.runSqlAll("SELECT * FROM people WHERE age = ?", [32])
      });
 ```
 
+### Filesystem
+
+Backend which stores items as files on disk. This backend works only on server. Please note that querying speed will be slow for large amounts of data because no index is utilized.
+
+It is useful for providing syncing capabilities in combination with Dropbox.
+
+Pass _path_ option to specify directory where the files will be stored. The path must exists.
+
+```javascript
+
+var FsBackend = require('warehousejs/backend/fs'),
+    backend = new FsBackend({path: '/path/to/storage'}),
+    store = backend.objectStore('item');
+```
+
 ### ElasticSearch
 
 Backend using [ElasticSearch](http://www.elasticsearch.org/).
@@ -258,7 +274,7 @@ var NeBackend = require('warehousejs/backend/nedb'),
     store = backend.objectStore('', options);
 ```
 
-Be default the datastire is in-memory only. You can specify `filename` option for the persistent datastore.
+Be default the datastore is in-memory only. You can specify `filename` option for the persistent datastore.
 
 ```javascript
 
@@ -310,7 +326,7 @@ data = {"1":{"id":1,"name":"John"},"2":{"id":2,"name":"Sarah"}};
 // create the store with initial data
 store = backend.objectStore('item', {json: data});
 
-// create the store and set data laterr
+// create the store and set data later
 store = backend.objectStore('item');
 store.fromJSON(data);
 ```
