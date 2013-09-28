@@ -1,6 +1,10 @@
 
 # Testing
 
+Init QUnit by running:
+
+`git clone https://github.com/jquery/qunit.git ../node_modules/qunit/support/qunit -b v1.10.0`
+
 ## Backend
 
 Run `node backend-run.js` for running tests, all should pass.
