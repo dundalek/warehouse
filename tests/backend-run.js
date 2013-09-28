@@ -1,6 +1,11 @@
 var testrunner = require("qunit");
 
 testrunner.run({
+    code: "./backend/fs-init.js",
+    tests: "./test.js"
+});
+
+testrunner.run({
     code: "./backend/ne-init.js",
     tests: "./test.js"
 });
