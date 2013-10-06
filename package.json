@@ -2,7 +2,16 @@
   "name": "warehousejs",
   "version": "0.3.0",
   "description": "Warehouse.js is a data storage layer node.js and browser providing unified API for many supported storage engines (MongoDB, MySQL, SQLite, in-memory and others). You can create REST server or client with only few lines of code.",
-  "keywords": ["database", "db", "storage", "mongodb", "mysql", "sqlite", "rest", "rql"],
+  "keywords": [
+    "database",
+    "db",
+    "storage",
+    "mongodb",
+    "mysql",
+    "sqlite",
+    "rest",
+    "rql"
+  ],
   "homepage": "http://github.com/dundalek/warehouse",
   "author": "Jakub Dundalek <dundalek@gmail.com> (http://dundalek.com/)",
   "repository": {
@@ -16,7 +25,9 @@
     "underscore-data": "git://github.com/dundalek/underscore-data.git"
   },
   "devDependencies": {
-    "qunit": "~0.5.16"
+    "qunit": "~0.5.16",
+    "shelljs": "~0.2.6",
+    "jsdoc": "~3.2.1"
   },
   "optionalDependencies": {
     "request": "~2.27.0",
