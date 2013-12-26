@@ -245,7 +245,7 @@ Pass _path_ option to specify directory where the files will be stored. The path
 
 var FsBackend = require('warehousejs/backend/fs'),
     backend = new FsBackend({path: '/path/to/storage'}),
-    store = backend.objectStore('item');
+    store = backend.createObjectStore('item');
 ```
 
 ### ElasticSearch
