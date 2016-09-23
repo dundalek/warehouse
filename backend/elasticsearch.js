@@ -148,7 +148,7 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
         var key = this._getObjectKey({}, directives);
 
         function handle(result) {
-                if (result && result.ok) {
+                if (result && result.found) {
                     return result.found ? 1 : 0;
                 } else if (result && result.responseText) {
                     result = JSON.parse(result.responseText);
