@@ -118,9 +118,13 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
         var url = this._url;
         url += key ? '/' + key : '';
 
+        if (key) {
+            delete object._id;
+        }
+
         return ajax(key ? 'PUT' : 'POST', url, object)
             .then(function(result) {
-                if (result.ok) {
+                if (key && result._shards.successful || result.created) {
                     if (result && result._id) {
                         key = result._id;
 
@@ -144,7 +148,7 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
         var key = this._getObjectKey({}, directives);
 
         function handle(result) {
-                if (result && result.ok) {
+                if (result && result.found) {
                     return result.found ? 1 : 0;
                 } else if (result && result.responseText) {
                     result = JSON.parse(result.responseText);
@@ -155,15 +159,15 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
             }
 
         return ajax('DELETE', this._url + '/' + key)
-            .then(handle).fail(handle);            
+            .then(handle).fail(handle);
     },
 
     /** Execute RQL query */
     query: function(query) {
         var q = rql2es(_.rql(query)),
             mapFn = q.fields ?
-                          function(x) { return x.fields; } 
-                        : function(x) { return x._source; };
+                          function(x) { return _.extend({}, {'id': x._id}, x.fields); }
+                        : function(x) { return _.extend({}, {'id': x._id}, x._source); };
         return ajax('POST', this._url + '/_search', q)
             .then(function(result) {
                 return result.hits.hits.map(mapFn);
