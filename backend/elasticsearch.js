@@ -166,8 +166,8 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
     query: function(query) {
         var q = rql2es(_.rql(query)),
             mapFn = q.fields ?
-                          function(x) { return x.fields; }
-                        : function(x) { return x._source; };
+                          function(x) { return _.extend({}, {'id': x._id}, x.fields); }
+                        : function(x) { return _.extend({}, {'id': x._id}, x._source); };
         return ajax('POST', this._url + '/_search', q)
             .then(function(result) {
                 return result.hits.hits.map(mapFn);
