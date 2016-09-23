@@ -118,9 +118,13 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
         var url = this._url;
         url += key ? '/' + key : '';
 
+        if (key) {
+            delete object._id;
+        }
+
         return ajax(key ? 'PUT' : 'POST', url, object)
             .then(function(result) {
-                if (result.ok) {
+                if (key && result._shards.successful || result.created) {
                     if (result && result._id) {
                         key = result._id;
 
@@ -155,14 +159,14 @@ var ElasticSearchStore = BaseBackend.BaseStore.extend(
             }
 
         return ajax('DELETE', this._url + '/' + key)
-            .then(handle).fail(handle);            
+            .then(handle).fail(handle);
     },
 
     /** Execute RQL query */
     query: function(query) {
         var q = rql2es(_.rql(query)),
             mapFn = q.fields ?
-                          function(x) { return x.fields; } 
+                          function(x) { return x.fields; }
                         : function(x) { return x._source; };
         return ajax('POST', this._url + '/_search', q)
             .then(function(result) {
